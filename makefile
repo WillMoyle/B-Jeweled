@@ -1,5 +1,5 @@
 OBJ = main.o board.o
-EXEC = bjeweled
+EXEC = bjeweled.exe
 TAGS = g++ -Wall -g
 
 $(EXEC): $(OBJ)
