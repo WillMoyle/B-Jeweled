@@ -17,6 +17,9 @@
 #include <istream>
 #include <vector>
 #include <string>
+#include <stdio.h>      /* NULL */
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 
 class Board {
     int m, n, c;
@@ -112,7 +115,46 @@ class Board {
     }
     
     void generateBoard() {
-        board = std::vector<std::vector<int> >(m,std::vector<int>(n,c));
+        board = std::vector<std::vector<int> >(m,std::vector<int>(n,0));
+        srand (time(NULL));
+        
+        // Row 1 and row 2
+        for (int i = 0; i < 2; i++) {
+            // Column 1 and 2
+            for (int j = 0; j < 2; j++)
+                board[i][j] = rand() % c + 1;
+            // Remaining columns
+            for (int j = 2; j < n; j++) {
+                board[i][j] = rand() % c + 1;
+                while (board[i][j] == board[i][j-1]
+                       && board[i][j] == board[i][j-2])
+                    board[i][j] = rand() % c + 1;
+            }
+        
+        }
+        // Remaining rows
+        for (int i = 2; i < m; i++) {
+            // Column 1 and 2
+            for (int j = 0; j < 2; j++) {
+                board[i][j] = rand() % c + 1;
+                while (board[i][j] == board[i-1][j]
+                       && board[i][j] == board[i-2][j])
+                    board[i][j] = rand() % c + 1;
+            }
+            // Remaining columns
+            for (int j = 2; j < n; j++) {
+                board[i][j] = rand() % c + 1;
+                while ((board[i][j] == board[i][j-1]
+                       && board[i][j] == board[i][j-2])
+                       || (board[i][j] == board[i-1][j]
+                           && board[i][j] == board[i-2][j]))
+                    board[i][j] = rand() % c + 1;
+            }
+            
+        }
+        
+        
+        // TODO: ensure a move exists
     }
     
     void printBoard(std::ostream& out) {
