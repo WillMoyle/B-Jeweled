@@ -1,4 +1,4 @@
-OBJ = main.o
+OBJ = main.o board.o
 EXEC = bjeweled
 TAGS = g++ -Wall -g
 

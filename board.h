@@ -22,274 +22,36 @@
 #include <time.h>       /* time */
 
 class Board {
-    int m, n, c;
+    // ATTRIBUTES
+    int rows, columns, pieces;
     std::vector<std::vector<int> > board;
     
-    
-    
-    // FUNCTION: welcomeMessage
     // Prints a welcome message to the console
-    void welcomeMessage(std::ostream& out) {
-        out << "\nWelcome to the B-Jeweled Board Generator";
-        out << "\nAuthor: Will Moyle\nLast modified: 29 January 2016";
-    }
-    // END OF FUNCTION
+    void welcomeMessage(std::ostream& out);
     
+    // Receives input to set m, n and c parameters and checks validity
+    void receiveParameters(std::ostream& out, std::istream& in);
     
+    // Files vector attribute with valid board satisfying game rules
+    void generateBoard();
     
-    void receiveParameters(std::ostream& out, std::istream& in) {
-        
-        std::string inputString;
-        out << "\nNumber of rows (must be greater than 3): ";
-        std::getline(in, inputString);
-        
-        bool invalidInput = true;
-        int inputValue;
-        
-        if (stringIsInt(inputString)) {
-            inputValue = std::stoi(inputString);
-            if (inputValue > 3)
-                invalidInput = false;
-        }
-        
-        while (invalidInput) {
-            out << "Invalid input. Please try again: ";
-            std::getline(in, inputString);
-            
-            if (stringIsInt(inputString)) {
-                inputValue = std::stoi(inputString);
-                if (inputValue > 3)
-                    invalidInput = false;
-            }
-        }
-        
-        m = inputValue;
-        
-        out << "\nNumber of columns (must be greater than 3): ";
-        std::getline(in, inputString);
-        
-        invalidInput = true;
-        
-        if (stringIsInt(inputString)) {
-            inputValue = std::stoi(inputString);
-            if (inputValue > 3)
-                invalidInput = false;
-        }
-        
-        while (invalidInput) {
-            out << "Invalid input. Please try again: ";
-            std::getline(in, inputString);
-            
-            if (stringIsInt(inputString)) {
-                inputValue = std::stoi(inputString);
-                if (inputValue > 3)
-                    invalidInput = false;
-            }
-        }
-        
-        n = inputValue;
-        
-        out << "\nNumber of pieces (must be greater than 2): ";
-        std::getline(in, inputString);
-        
-        invalidInput = true;
-        
-        if (stringIsInt(inputString)) {
-            inputValue = std::stoi(inputString);
-            if (inputValue > 2)
-                invalidInput = false;
-        }
-        
-        while (invalidInput) {
-            out << "Invalid input. Please try again: ";
-            std::getline(in, inputString);
-            
-            if (stringIsInt(inputString)) {
-                inputValue = std::stoi(inputString);
-                if (inputValue > 2)
-                    invalidInput = false;
-            }
-        }
-        
-        c = inputValue;
-    }
+    // Prints the board to the given ostream
+    void printBoard(std::ostream& out);
     
-    void generateBoard() {
-        board = std::vector<std::vector<int> >(m,std::vector<int>(n,0));
-        srand (time(NULL));
-        bool possibleMove = false;
-        
-        // Row 1 and row 2
-        for (int i = 0; i < 2; i++) {
-            // Column 1 and 2
-            for (int j = 0; j < 2; j++)
-                board[i][j] = rand() % c + 1;
-            // Remaining columns
-            for (int j = 2; j < n; j++) {
-                board[i][j] = rand() % c + 1;
-                while (board[i][j] == board[i][j-1]
-                       && board[i][j] == board[i][j-2])
-                    board[i][j] = rand() % c + 1;
-                if (!possibleMove && j >= 3) {
-                    if (board[i][j] != board[i][j-1]
-                        && board[i][j] == board[i][j-2]
-                        && board[i][j] == board[i][j-3])
-                        possibleMove =true;
-                }
-                if (!possibleMove && i == 2) {
-                    if (board[i][j] != board[i-1][j]
-                        && board[i][j] == board[i-1][j-1]
-                        && board[i][j] == board[i-1][j-2])
-                        possibleMove =true;
-                }
-            }
-        
-        }
-        // Remaining rows
-        for (int i = 2; i < m; i++) {
-            // Column 1 and 2
-            for (int j = 0; j < 2; j++) {
-                board[i][j] = rand() % c + 1;
-                while (board[i][j] == board[i-1][j]
-                       && board[i][j] == board[i-2][j])
-                    board[i][j] = rand() % c + 1;
-            }
-            // Remaining columns
-            for (int j = 2; j < n; j++) {
-                board[i][j] = rand() % c + 1;
-                while ((board[i][j] == board[i][j-1]
-                       && board[i][j] == board[i][j-2])
-                       || (board[i][j] == board[i-1][j]
-                           && board[i][j] == board[i-2][j]))
-                    board[i][j] = rand() % c + 1;
-                
-                // Check if a move is generated to the left
-                if (!possibleMove && j >= 3) {
-                    if (board[i][j] != board[i][j-1]
-                        && board[i][j] == board[i][j-2]
-                        && board[i][j] == board[i][j-3])
-                        possibleMove =true;
-                }
-                
-                // Check if a move is generated above
-                if (!possibleMove && i >= 3) {
-                    if (board[i][j] != board[i-1][j]
-                        && board[i][j] == board[i-2][j]
-                        && board[i][j] == board[i-3][j])
-                        possibleMove =true;
-                }
-                
-                // Check if move is generated diagonally up
-                if (!possibleMove) {
-                    if (board[i][j] != board[i-1][j]
-                        && board[i][j] == board[i-1][j-1]
-                        && board[i][j] == board[i-1][j-2])
-                        possibleMove =true;
-                }
-                
-                // Check if move is generated diagonally to the left
-                if (!possibleMove) {
-                    if (board[i][j] != board[i][j-1]
-                        && board[i][j] == board[i-1][j-1]
-                        && board[i][j] == board[i-2][j-1])
-                        possibleMove =true;
-                }
-                
-            }
-            
-        }
-        
-        
-        // TODO: ensure a move exists
-        while (!possibleMove) {
-            int newC = rand() % c +1;
-            if (board[0][2] != newC
-                && !(board[1][0] == newC && board[2][0] == newC)
-                && !(board[1][1] == newC && board[2][1] == newC)
-                && !(board[1][3] == newC && board[2][3] == newC)
-                && !(n >= 6 && board[0][4] == newC && board[0][5] == newC)) {
-                board[0][0] = newC;
-                board[0][1] = newC;
-                board[0][3] = newC;
-                possibleMove = true;
-            }
-        }
-    }
-    
-    void printBoard(std::ostream& out) {
-        out << "\nPRINTING BOARD:\n";
-        for (int i = 0; i < m; i++) {
-            out << "\t";
-            for (int j = 0; j < n; j++)
-                out << board[i][j] << " ";
-            out << "\n";
-        }
-        out << "\n";
-    }
-    
-    // FUNCTION: stringIsInt
     // Returns true if the given string represents a valid positive integer
-    bool stringIsInt(std::string word) {
-        int len = word.length();
-        if (len == 0)
-            return false;
-        int position = 0;
-        while (position < len) {
-            if (word[position] < '0' || word[position] > '9')
-                return false;
-            position++;
-        }
-        return true;
-    }
-    // END OF FUNCTION
+    bool stringIsInt(std::string word);
     
-    
-    
-    // FUNCTION: repeat
     // Returns true if user wishes to generate another board
-    bool repeat(std::ostream& out, std::istream& in) {
-        std::string userInput;
-        out << "\nDo you wish to generate another board? (Y/N) ";
-        std::getline(in, userInput);
-        
-        while (userInput.compare("Y") && userInput.compare("N")
-               && userInput.compare("y") && userInput.compare("n")) {
-            out << "\nInvalid input. Please enter 'Y' or 'N': ";
-            std::getline(in, userInput);
-        }
-        
-        if (!userInput.compare("N") || !userInput.compare("n"))
-            return false;
-        return true;
-    }
-    // END OF FUNCTION
+    bool repeat(std::ostream& out, std::istream& in);
     
-    
-    void finalMessage(std::ostream& out) {
-        out << "\nGoodbye\n";
-    }
+    // Prints goodbye message to given ostream
+    void finalMessage(std::ostream& out);
     
     
 public:
     
-    Board(std::ostream& out, std::istream& in) {
-        
-        welcomeMessage(out);
-        
-        // Loop to allow for multiple conversions
-        bool loop = true;
-        while (loop) {
-            receiveParameters(out, in);
-            generateBoard();
-            printBoard(out);
-            
-            loop = repeat(out, in);
-        }
-        
-        finalMessage(out);
-    }
-    
-    
+    // Constructor performs the main running of the generator
+    Board(std::ostream& out, std::istream& in);
     
 };
 
