@@ -1,5 +1,5 @@
-OBJ = main.o board.o
-EXEC = converter
+OBJ = main.o
+EXEC = bjeweled
 TAGS = g++ -Wall -g
 
 $(EXEC): $(OBJ)

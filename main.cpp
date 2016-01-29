@@ -11,10 +11,11 @@
 
 
 #include "board.h"
+#include <iostream>
 
 int main() {
 
-
+    Board board(std::cout, std::cin);
 
     return 0;
 }
