@@ -117,6 +117,7 @@ class Board {
     void generateBoard() {
         board = std::vector<std::vector<int> >(m,std::vector<int>(n,0));
         srand (time(NULL));
+        bool possibleMove = false;
         
         // Row 1 and row 2
         for (int i = 0; i < 2; i++) {
@@ -129,6 +130,18 @@ class Board {
                 while (board[i][j] == board[i][j-1]
                        && board[i][j] == board[i][j-2])
                     board[i][j] = rand() % c + 1;
+                if (!possibleMove && j >= 3) {
+                    if (board[i][j] != board[i][j-1]
+                        && board[i][j] == board[i][j-2]
+                        && board[i][j] == board[i][j-3])
+                        possibleMove =true;
+                }
+                if (!possibleMove && i == 2) {
+                    if (board[i][j] != board[i-1][j]
+                        && board[i][j] == board[i-1][j-1]
+                        && board[i][j] == board[i-1][j-2])
+                        possibleMove =true;
+                }
             }
         
         }
@@ -149,12 +162,58 @@ class Board {
                        || (board[i][j] == board[i-1][j]
                            && board[i][j] == board[i-2][j]))
                     board[i][j] = rand() % c + 1;
+                
+                // Check if a move is generated to the left
+                if (!possibleMove && j >= 3) {
+                    if (board[i][j] != board[i][j-1]
+                        && board[i][j] == board[i][j-2]
+                        && board[i][j] == board[i][j-3])
+                        possibleMove =true;
+                }
+                
+                // Check if a move is generated above
+                if (!possibleMove && i >= 3) {
+                    if (board[i][j] != board[i-1][j]
+                        && board[i][j] == board[i-2][j]
+                        && board[i][j] == board[i-3][j])
+                        possibleMove =true;
+                }
+                
+                // Check if move is generated diagonally up
+                if (!possibleMove) {
+                    if (board[i][j] != board[i-1][j]
+                        && board[i][j] == board[i-1][j-1]
+                        && board[i][j] == board[i-1][j-2])
+                        possibleMove =true;
+                }
+                
+                // Check if move is generated diagonally to the left
+                if (!possibleMove) {
+                    if (board[i][j] != board[i][j-1]
+                        && board[i][j] == board[i-1][j-1]
+                        && board[i][j] == board[i-2][j-1])
+                        possibleMove =true;
+                }
+                
             }
             
         }
         
         
         // TODO: ensure a move exists
+        while (!possibleMove) {
+            int newC = rand() % c +1;
+            if (board[0][2] != newC
+                && !(board[1][0] == newC && board[2][0] == newC)
+                && !(board[1][1] == newC && board[2][1] == newC)
+                && !(board[1][3] == newC && board[2][3] == newC)
+                && !(n >= 6 && board[0][4] == newC && board[0][5] == newC)) {
+                board[0][0] = newC;
+                board[0][1] = newC;
+                board[0][3] = newC;
+                possibleMove = true;
+            }
+        }
     }
     
     void printBoard(std::ostream& out) {
